@@ -1,4 +1,3 @@
-
 package de.dhbw.mobmonrob.mir100.restapi.api;
 
 import javax.xml.bind.annotation.XmlElement;

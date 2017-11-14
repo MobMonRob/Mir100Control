@@ -46,6 +46,5 @@ public class Test {
         
         //TODO
         // test in welchen zeitlichen Abständen ich die Position beschaffen kann!
-        // json--> pojo wie geht das
     }
 }
