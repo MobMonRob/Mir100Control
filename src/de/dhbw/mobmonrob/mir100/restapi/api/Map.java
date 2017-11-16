@@ -9,10 +9,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class Map {
+    
     @XmlElement(required = true)
     private String guid;  
+    
     @XmlElement(required = true)
     private String name; 
+    
     @XmlElement(required = true)
     private String url;
     
