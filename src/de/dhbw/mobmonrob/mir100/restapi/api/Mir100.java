@@ -2,7 +2,6 @@ package de.dhbw.mobmonrob.mir100.restapi.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import de.dhbw.mobmonrob.mir100.restapi.impl.Body;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,6 +25,7 @@ public class Mir100 {
         private WebTarget webBaseTarget;
         
         private Invocation.Builder currentPositionInvocationBuilder;
+        private Invocation.Builder currentPositionAndVelocityInvocationBuilder;
         private Invocation.Builder mapsInvocationBuilder;
         
         public static final String REGISTER_PATH = "register/";
@@ -43,7 +43,8 @@ public class Mir100 {
             Client client = ClientBuilder.newClient();
             client = client.register(JacksonFeature.class);
             webBaseTarget = client.target(REST_URI);
-            buildCurrentPositionInvocationBuilder();
+            //buildCurrentPositionInvocationBuilder();
+            buildCurrentPositionAndVelocityInvocationBuilder();
             buildMapsInvocationBuilder();
         }
 
@@ -281,6 +282,15 @@ public class Mir100 {
             currentPositionInvocationBuilder.header("authorization",CREDENTIALS);
             currentPositionInvocationBuilder.accept("application/json");
         }
+        private void buildCurrentPositionAndVelocityInvocationBuilder(){
+            WebTarget registersWebTarget = webBaseTarget.path("status");
+            //registersWebTarget = registersWebTarget.queryParam("whitelist", "position, uptime, velocity");
+            registersWebTarget = registersWebTarget.queryParam("whitelist", "position", "velocity", "uptime");
+            // buildingan http request invocation
+            currentPositionAndVelocityInvocationBuilder = registersWebTarget.request(MediaType.APPLICATION_JSON_TYPE);
+            currentPositionAndVelocityInvocationBuilder.header("authorization",CREDENTIALS);
+            currentPositionAndVelocityInvocationBuilder.accept("application/json");
+        }
         private void buildMapsInvocationBuilder(){
             WebTarget registersWebTarget = webBaseTarget.path("maps");
             //registersWebTarget = registersWebTarget.queryParam("whitelist", "position");
@@ -299,9 +309,14 @@ public class Mir100 {
         public Position getCurrentPosition() throws RuntimeException {
             Response response = currentPositionInvocationBuilder.get();
             if (response.getStatus() != 200) throw new RuntimeException("getCurrentPosition() failed: "+String.valueOf(response.getStatus()));
-            return response.readEntity(Body.class).getPosition();
+            return response.readEntity(Result.class).getPosition();
         }
         
+        public Result getCurrentPositionAndVelocity() throws RuntimeException {
+            Response response = currentPositionAndVelocityInvocationBuilder.get();
+            if (response.getStatus() != 200) throw new RuntimeException("getCurrentPositionAndVelocity() failed: "+String.valueOf(response.getStatus()));
+            return response.readEntity(Result.class);
+        }
         /**
          * Information about the robot including current state, distance to next 
          * target in meters, battery time left in seconds and current coordinate 

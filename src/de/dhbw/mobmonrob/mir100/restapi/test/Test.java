@@ -21,7 +21,7 @@ public class Test {
         Mir100 mir100 = new Mir100();
         //mir100.getRegisters();
         
-        mir100.getMapList();
+        //mir100.getMapList();
         /*while(true){
             Position position = mir100.getCurrentPosition();
             System.out.println(position.toString());
